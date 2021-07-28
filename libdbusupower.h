@@ -44,13 +44,34 @@ typedef struct {
 	dbus_uint32_t warning_level;
 } Device;
 
+/* Init DBus Upower wrapper */
 void dw_init(DBusUpower *dw);
+
+/** Clean resources asociated with the wrapper */
 void dw_unref(DBusUpower *dw);
 
+/** Call the EnumerateDevices method
+ * @return List of object paths, `free()` the list (not each string) when
+ * you're done
+ */
 char** dw_enumerate_devices(DBusUpower *dw);
-char* dw_get_critical_action(DBusUpower *dw);
-Device* dw_get_device(DBusUpower *dw, char *path);
-int dw_refresh(DBusUpower *dw);
 
+
+/** Call the GetCriticalAction method
+ * @return Action to be taken by the system when power supply is critical.
+ * Shouldn't be `free`d
+ */
+char* dw_get_critical_action(DBusUpower *dw);
+
+/** Get the Device info by listing it's properties
+ * @return If `path` exists, return a pointer to the device instance (should be
+ * `free`d), otherwise NULL Shouldn't be `free`d
+ */
+Device* dw_get_device(DBusUpower *dw, char *path);
+
+/** Call the Refresh method
+ * @return 1 if the call was successful, 0 otherwise
+ */
+int dw_refresh(DBusUpower *dw);
 
 #endif // DBUS_UPOWER_H
